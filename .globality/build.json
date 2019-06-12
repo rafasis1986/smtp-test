@@ -1,0 +1,10 @@
+{
+  "type": "python-library",
+  "version": "0.1.0",
+  "params": {
+    "name": "smtp_test",
+    "pypi": {
+      "repository": "pypi"
+    }
+  }
+}
