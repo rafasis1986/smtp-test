@@ -1,35 +1,25 @@
-# CircleCI Configuration file
+# Python CircleCI 2.0 configuration file
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.7
 
-machine:
-  python:
-      version: 3.6.7
-
-general:
-  artifacts:
-     - "dist"
-     - "cover"
-
-dependencies:
-  override:
-    - pip install tox tox-pyenv
-    - pyenv local 3.6.7
-
-test:
-  override:
-     - tox
-
-deployment:
-  pypi:
-    tag: /[0-9]+(\.[0-9]+)*/
-    owner: infotor
-    commands:
-      - echo "[distutils]" > ~/.pypirc
-      - echo "index-servers =" >> ~/.pypirc
-      - echo "    pypi" >> ~/.pypirc
-      - echo >> ~/.pypirc
-      - echo "[pypi]" >> ~/.pypirc
-      - echo "username:$PYPI_USERNAME" >> ~/.pypirc
-      - echo "password:$PYPI_PASSWORD" >> ~/.pypirc
-      - echo >> ~/.pypirc
-      - python setup.py register -r pypi
-      - python setup.py sdist upload -r pypi
+    working_directory: ~/repo
+    
+    steps:
+    
+    - checkout
+    
+    - run:
+        name: install dependencies
+        command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+    
+    - run:
+        name: run tests
+        command: |
+            . venv/bin/activate
+             python setup.py nosetests --with-coverage --cover-package=smtp_test --cover-erase --cover-html
